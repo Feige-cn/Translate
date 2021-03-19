@@ -16,9 +16,11 @@ class Translater(QMainWindow,Ui_MainWindow):
     def __init__(self,parent=None):
         super(Translater, self).__init__(parent)
         self.setupUi(self)
-        self.version = 2.7
-        self.version_detail = '\n更新说明：\t增加字体、颜色设置；\n\t增加部分语音播报翻译结果；\n\t优化语音播放代码。'
+        self.version = 2.8
+        self.version_detail = '\n更新说明：\t增加字体、颜色设置；\n\t增加4种语言发音；\n\t优化语音播放代码。'
         self.cwd = os.path.expanduser('~')
+        self.con_in_voice.hide()
+        self.label_9.show()
         self.con_out_voice.hide()
         self.label_H.show()
         self.data_dict = {
@@ -44,7 +46,8 @@ class Translater(QMainWindow,Ui_MainWindow):
         self.con_in_size.clicked.connect(lambda: self.change_fontact(1))
         self.con_out_color.clicked.connect(lambda: self.change_coloract(0))
         self.con_out_size.clicked.connect(lambda: self.change_fontact(0))
-        self.con_out_voice.clicked.connect(self.speak_act)
+        self.con_in_voice.clicked.connect(lambda: self.speak_act(1))
+        self.con_out_voice.clicked.connect(lambda: self.speak_act(0))
 
         self.player = QMediaPlayer()
 
@@ -125,50 +128,74 @@ class Translater(QMainWindow,Ui_MainWindow):
     def get_language(self):
         if self.radio_en.isChecked():
             language = 'en'
+            self.con_in_voice.show()
+            self.label_9.hide()
             self.con_out_voice.show()
             self.label_H.hide()
         if self.radio_ja.isChecked():
             language = 'ja'
+            self.con_in_voice.show()
+            self.label_9.hide()
             self.con_out_voice.show()
             self.label_H.hide()
         if self.radio_ko.isChecked():
             language = 'ko'
+            self.con_in_voice.show()
+            self.label_9.hide()
             self.con_out_voice.show()
             self.label_H.hide()
         if self.radio_ru.isChecked():
             language = 'ru'
+            self.con_in_voice.hide()
+            self.label_9.show()
             self.con_out_voice.hide()
             self.label_H.show()
         if self.radio_de.isChecked():
             language = 'de'
+            self.con_in_voice.hide()
+            self.label_9.show()
             self.con_out_voice.hide()
             self.label_H.show()
         if self.radio_fr.isChecked():
             language = 'fr'
+            self.con_in_voice.show()
+            self.label_9.hide()
             self.con_out_voice.show()
             self.label_H.hide()
         if self.radio_es.isChecked():
             language = 'es'
+            self.con_in_voice.hide()
+            self.label_9.show()
             self.con_out_voice.hide()
             self.label_H.show()
         if self.radio_pt.isChecked():
             language = 'pt'
+            self.con_in_voice.hide()
+            self.label_9.show()
             self.con_out_voice.hide()
             self.label_H.show()
         if self.radio_it.isChecked():
             language = 'it'
+            self.con_in_voice.hide()
+            self.label_9.show()
             self.con_out_voice.hide()
             self.label_H.show()
         if self.radio_ar.isChecked():
             language = 'ar'
+            self.con_in_voice.hide()
+            self.label_9.show()
             self.con_out_voice.hide()
             self.label_H.show()
         if self.radio_id.isChecked():
             language = 'id'
+            self.con_in_voice.hide()
+            self.label_9.show()
             self.con_out_voice.hide()
             self.label_H.show()
         if self.radio_vi.isChecked():
             language = 'vi'
+            self.con_in_voice.hide()
+            self.label_9.show()
             self.con_out_voice.hide()
             self.label_H.show()
         self.data_dict['language'] = language
@@ -271,8 +298,11 @@ class Translater(QMainWindow,Ui_MainWindow):
             self.radio_en.setChecked(True)
         return speak
 
-    def speak_act(self):
-        content = self.con_out.toPlainText()
+    def speak_act(self, x):
+        if x == 1:
+            content = self.con_in.toPlainText()
+        else:
+            content = self.con_out.toPlainText()
         url = 'http://tts.youdao.com/fanyivoice'
         le = self.get_speak()
         voice_url = url + '?word=' + content + '&le=' + le
@@ -280,9 +310,14 @@ class Translater(QMainWindow,Ui_MainWindow):
         self.player.setVolume(50)
         self.player.play()
         self.player.stateChanged.connect(self.play_state)
-        self.con_out_voice.setDisabled(True)
+        if x == 1:
+            self.con_in_voice.setDisabled(True)
+        else:
+            self.con_out_voice.setDisabled(True)
+
 
     def play_state(self):
+        self.con_in_voice.setEnabled(True)
         self.con_out_voice.setEnabled(True)
 
     def tran_act(self):
