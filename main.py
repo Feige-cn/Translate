@@ -267,9 +267,13 @@ class Translater(QMainWindow,Ui_MainWindow):
         if self.check_chinese(context):
             data['from'] = 'zh-CHS'
             data['to'] = l
+            self.con_in_voice.hide()
+            self.label_9.show()
         else:
             data['from'] = l
             data['to'] = 'zh-CHS'
+            self.con_out_voice.hide()
+            self.label_H.show()
             
         url = 'http://fanyi.youdao.com/translate_o?smartresult=dict&smartresult=rule'
         response = post(url,data=data,headers=headers)
